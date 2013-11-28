@@ -1,27 +1,16 @@
-var http = require("http");
-var url = require("url");
+var http = require('http'),
+	url = require('url');
 
-function iniciar(route, handle) {
-  function onRequest(request, response) {
-        var dataPosteada = "";
-        var pathname = url.parse(request.url).pathname;
-        console.log("Peticion para " + pathname + " recibida.");
+function init(route, handle){
+	function onRequest(request, response){
+		var pathname = url.parse(request.url).pathname;
+		
+		route(pathname, handle, response);
+		console.log('a request from... ' + pathname);
+	};
 
-        request.setEncoding("utf8");
-
-        request.addListener("data", function(trozoPosteado) {
-          dataPosteada += trozoPosteado;
-          console.log("Recibido trozo POST '" + trozoPosteado + "'.");
-    });
-
-    request.addListener("end", function() {
-      route(handle, pathname, response, dataPosteada);
-    });
-
-  }
-
-  http.createServer(onRequest).listen(8080);
-  console.log("Servidor Iniciado");
+	http.createServer(onRequest).listen(1234);
+	console.log('server up...');
 }
 
-exports.iniciar = iniciar;
+exports.init = init;
